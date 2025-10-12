@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listes de Noël 🎄</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            padding: 30px 0;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .kids-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .subtitle {
+                font-size: 1em;
+            }
+
+            .kids-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .wishlist-view {
+                padding: 20px;
+            }
+
+            .item {
+                flex-direction: column;
+            }
+
+            .item-image {
+                width: 100%;
+                height: 200px;
+            }
+
+            .wishlist-header h2 {
+                font-size: 1.8em;
+            }
+        }
+
+        .kid-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .kid-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+
+        .kid-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5em;
+            margin: 0 auto 20px;
+        }
+
+        .boy-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #006eff 0%, #90c854 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5em;
+            margin: 0 auto 20px;
+        }
+
+        .kid-name {
+            text-align: center;
+            font-size: 1.8em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .item-count {
+            text-align: center;
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .wishlist-view {
+            display: none;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .wishlist-view.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .back-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1em;
+            cursor: pointer;
+            margin-bottom: 30px;
+            transition: background 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #5568d3;
+        }
+
+        .wishlist-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .wishlist-header h2 {
+            font-size: 2.5em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .total-price {
+            font-size: 1.3em;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .item {
+            display: flex;
+            gap: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: transform 0.2s;
+        }
+
+        .item:hover {
+            transform: translateX(5px);
+        }
+
+        .item-image {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 10px;
+            background: #e9ecef;
+        }
+
+        .item-details {
+            flex: 1;
+        }
+
+        .item-title {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .item-author {
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .stock-info {
+            color: #e74c3c;
+            font-size: 0.9em;
+            margin-bottom: 8px;
+        }
+
+        .item-price {
+            font-size: 1.5em;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .home-view.hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎄 Listes de Noël 2025 🎁</h1>
+            <p class="subtitle">Choisissez la liste que vous souhaitez consulter</p>
+        </header>
+
+        <div class="home-view" id="homeView">
+            <div class="kids-grid">
+                <div class="kid-card" onclick="showWishlist('matthieu')">
+                    <div class="boy-avatar">👦</div>
+                    <div class="kid-name">Matthieu</div>
+                    <div class="item-count">2 cadeaux</div>
+                </div>
+
+                <div class="kid-card" onclick="showWishlist('sarah')">
+                    <div class="kid-avatar">👧</div>
+                    <div class="kid-name">Sarah</div>
+                    <div class="item-count">0 cadeaux</div>
+                </div>
+
+
+                <div class="kid-card" onclick="showWishlist('Lola')">
+                    <div class="kid-avatar">👧</div>
+                    <div class="kid-name">Lola</div>
+                    <div class="item-count">0 cadeaux</div>
+                </div>
+
+                <div class="kid-card" onclick="showWishlist('Marie')">
+                    <div class="kid-avatar">👧</div>
+                    <div class="kid-name">Marie</div>
+                    <div class="item-count">0 cadeaux</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="wishlist-view" id="matthieuList">
+            <button class="back-btn" onclick="goHome()">← Retour</button>
+            
+            <div class="wishlist-header">
+                <h2>Liste de Matthieu 👦</h2>
+                <p class="total-price">Total : 59,90 €</p>
+            </div>
+
+            <div class="item">
+                <img src="https://m.media-amazon.com/images/I/61GWXQU55+L._AC_AA360_.jpg" alt="Livre" class="item-image">
+                <div class="item-details">
+                    <div class="item-title">De l'enfer au paradis: Les secrets des deux saisons qui ont changé l'histoire du PSG (2023-2025)</div>
+                    <div class="item-author">par Fabrice Hawkins</div>
+                    <div style="color: #27ae60; margin-bottom: 8px;">✓ En stock</div>
+                    <div>📖 Broché</div>
+                    <a href="https://www.amazon.fr/gp/product/2080488295/ref=ox_sc_act_title_1?smid=A1X6FK5RDHNB96&psc=1" target="_blank" style="display: inline-block; margin-top: 10px; color: #667eea; text-decoration: none; font-weight: 600;">🔗 Voir sur Amazon →</a>
+                </div>
+                <div class="item-price">20,00€</div>
+            </div>
+
+            <div class="item">
+                <img src="https://m.media-amazon.com/images/I/41GP94WUZCL._AC_AA360_.jpg" alt="Lunettes" class="item-image">
+                <div class="item-details">
+                    <div class="item-title">Horus X® • Lunette Gaming • Lunette Anti Lumière Bleue</div>
+                    <div class="item-author">Lunettes Écran PC | Anti Fatigue & Migraine Oculaire | ONE Amber</div>
+                    <div style="color: #27ae60; margin-bottom: 8px;">✓ En stock</div>
+                    <div>🎨 Couleur: Gaming Amber</div>
+                    <a href="https://www.amazon.fr/gp/product/B077QDGWX8/ref=ox_sc_act_title_2?smid=A285OBCHUV7N7M&th=1" target="_blank" style="display: inline-block; margin-top: 10px; color: #667eea; text-decoration: none; font-weight: 600;">🔗 Voir sur Amazon →</a>
+                </div>
+                <div class="item-price">39,90€</div>
+            </div>
+        </div>
+
+        <div class="wishlist-view" id="sarahList">
+            <button class="back-btn" onclick="goHome()">← Retour</button>
+            
+            <div class="wishlist-header">
+                <h2>Liste de Sarah 👧</h2>
+                <p class="total-price">Total : 0,00 €</p>
+            </div>
+
+            <div style="text-align: center; padding: 60px 20px; color: #666;">
+                <div style="font-size: 4em; margin-bottom: 20px;">🎁</div>
+                <p style="font-size: 1.2em;">La liste de Sarah est en cours de préparation...</p>
+            </div>
+        </div>
+    </div>
+
+
+     <div class="wishlist-view" id="LolaList">
+            <button class="back-btn" onclick="goHome()">← Retour</button>
+            
+            <div class="wishlist-header">
+                <h2>Liste de Lola 👧</h2>
+                <p class="total-price">Total : 0,00 €</p>
+            </div>
+
+            <div style="text-align: center; padding: 60px 20px; color: #666;">
+                <div style="font-size: 4em; margin-bottom: 20px;">🎁</div>
+                <p style="font-size: 1.2em;">La liste de Lola est en cours de préparation...</p>
+            </div>
+        </div>
+    </div>
+
+         <div class="wishlist-view" id="MarieList">
+            <button class="back-btn" onclick="goHome()">← Retour</button>
+            
+            <div class="wishlist-header">
+                <h2>Liste de Marie 👧</h2>
+                <p class="total-price">Total : 0,00 €</p>
+            </div>
+
+            <div style="text-align: center; padding: 60px 20px; color: #666;">
+                <div style="font-size: 4em; margin-bottom: 20px;">🎁</div>
+                <p style="font-size: 1.2em;">La liste de Marie est en cours de préparation...</p>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        function showWishlist(kid) {
+            document.getElementById('homeView').classList.add('hidden');
+            document.getElementById(kid + 'List').classList.add('active');
+        }
+
+        function goHome() {
+            document.getElementById('homeView').classList.remove('hidden');
+            document.querySelectorAll('.wishlist-view').forEach(view => {
+                view.classList.remove('active');
+            });
+        }
+    </script>
+</body>
+</html>
